@@ -1,0 +1,29 @@
+[
+  {
+	"name":"Mayim",
+	"gender":"Female",
+	"email":"Mayim@test.com",
+	"job":"Designer",
+	"image":"",
+	"xValue":100,
+	"yValue":100
+  },
+  {
+	"name":"Jim",
+	"gender":"Male",
+	"email":"Jim@test.com",
+	"job":"Developer",
+	"image":"",
+	"xValue":10,
+	"yValue":50
+  },
+  {
+	"name":"Johnny",
+	"gender":"Male",
+	"email":"Johnny@test.com",
+	"job":"Project Manager",
+	"image":"",
+	"xValue":200,
+	"yValue":250
+  }
+]

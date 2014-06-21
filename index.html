@@ -1,58 +1,78 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" ng-app> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" ng-app> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" ng-app> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" ng-app> <!--<![endif]-->
+<html ng-app="webApp">
     <head>
+	
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Office Web App - Nic128</title>
+        <title>Office Web App</title>
         <meta name="description" content="Office Web App - Nic128">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+		<link href="css/simple-sidebar.css" rel="stylesheet">
         <link rel="stylesheet" href="css/main.css">
 
-        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
+    <body ng-controller="IndexCtrl">
+		
+		<div id="wrapper">
+		
+			<div id="sidebar-wrapper">
+				<ul class="sidebar-nav">
+					<li class="sidebar-brand">Edit map position</li>
+					<li ng-repeat="person in persons">
+						<a href="#">{{person.name}}</a>
+					</li>
+				</ul>
+			</div>
+			
+			
+			<!-- Page content -->
+			<div id="page-content-wrapper">
+				<div class="content-header">
+					<h1>
+						<a id="menu-toggle" href="#" class="btn btn-default"><i class="icon-reorder"></i></a>
+						Simple Sidebar
+					</h1>
+					<p class="button-group">
+						<a href="#" class="btn btn-primary" role="button" ng-click="save()">Edit</a> 
+						<a href="#" class="btn btn-default" role="button" ng-click="cancel()">Delete</a>
+						<script type="text/ng-template" id="myModalContent.html">
+							<div class="modal-header">
+								<h3 class="modal-title">Are you sure you want to save and quit editing?</h3>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-primary" ng-click="ok()">OK</button>
+								<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+							</div>
+						</script>
+					</p>
+				</div>
+				<!-- Keep all page content within the page-content inset div! -->
+				<div class="page-content inset" ng-controller="MapCtrl as map">
+					<div class="row">
+						<input type="number" name="xValue" ng-model="map.xValue" ng-change="map.changePosition()" ng-disabled="map.inputDisabled()">
+						<input type="number" name="yValue" ng-model="map.yValue" ng-change="map.changePosition()" ng-disabled="map.inputDisabled()">
+					</div>
+					<div class="row">
+						<span class="glyphicon glyphicon-map-marker" 
+							ng-repeat="person in persons" ng-style="person.style" 
+							ng-click="map.select(person)" ng-init="map.initPosition(person)"
+							ng-class="map.selectedClass(person)"></span>
+						<img ng-src="img/DepartmentOfficeMap.gif" ng-click="map.unselect()">
+					</div>
+				</div>
+			</div>
+		{{persons}}
         </div>
-      </div>
-    </div>
+		
+		
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+        <script src="js/vendor/angular-route.min.js"></script>
+        <script src="js/vendor/ui-bootstrap-tpls-0.11.0.min.js"></script>
+        <script src="js/controller.js"></script>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="map">
-		<img src="http://geology.com/world/world-map.gif" alt="Map" />
-    </div>
-
-    </div> <!-- /container -->        
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
-        <!--<script>window.jQuery || document.write('<script src="js/vendor/angular.min.js"><\/script>')</script>-->
-
-        <script src="js/main.js"></script>
-
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. 
-        <script>
-            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
-            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-            ga('create','UA-XXXXX-X');ga('send','pageview');
-        </script>-->
     </body>
 </html>

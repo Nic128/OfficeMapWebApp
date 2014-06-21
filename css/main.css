@@ -4,7 +4,71 @@
    Author's custom styles
    ========================================================================== */
 
-body {
-	padding-top: 70px;
-	padding-bottom: 20px;
+.content {
+	position: relative;
+	padding: 85px 15px 15px;
+}
+
+.caption img {
+	max-width: 150px;
+	max-height: 150px;
+	float: left;
+	margin-right: 10px;
+}
+
+h3 {
+	margin: 10px 0;
+}
+
+.thumbnail {
+	min-height:177px;
+}
+
+.section-anchor {
+  position: absolute;
+  top: -85px;
+}
+
+.input-group input{
+	top: 1px;
+}
+
+#wrapper {
+	
+}
+
+.button-group {
+	position: absolute;
+	right: 10px;
+	top: 0;
+}
+
+.row {
+	position:relative;
+	padding: 0 0 10px;
+	margin:0;
+}
+
+#wrapper .glyphicon {
+	position:absolute;
+	font-size:1.8em;
+	text-shadow: 2px 2px 5px #000;
+	color: #2a6496;
+}
+
+#wrapper .glyphicon.selected {
+	color: #f00;
+}
+
+.sidebar-nav li a.selected {
+	color: #fff;
+	background: rgba(255,255,255,0.2);
+	text-decoration: none;
+}
+
+/* Modal */
+
+.modal-footer {
+	margin-top: 0;
+	border-top: none;
 }

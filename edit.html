@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html ng-app="webApp">
+    <head>
+	
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Office Web App</title>
+        <meta name="description" content="Office Web App - Nic128">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+    </head>
+    <body ng-controller="EditCtrl">
+		
+		<div nav-bar></div>
+		
+		<div class="content">
+		
+			<p>
+				<a href="#" class="btn btn-primary" role="button" ng-click="createUser()">Create User</a> 
+			</p>
+			
+			<div class="row">
+			  <div class="col-sm-6 col-md-4" ng-repeat="person in persons">
+				<a name="person{{$index}}" class="section-anchor"></a>
+				<div class="thumbnail" ng-controller="elementCtrl as el">
+					<div class="caption" ng-show="!el.isEditing">
+						<img ng-src="{{person.image || 'img/generic-'+person.gender+'.jpg' | lowercase}}" alt="Photo of {{person.name}}">
+						<h3>{{person.name}}</h3>
+						<p>{{person.job}}</p>
+						<p>
+							<a href="mailto:{{person.email}}">{{person.email}}</a>
+						</p>
+						<p>
+							<a href="#person{{$index}}" class="btn btn-primary" role="button" ng-click="el.enterEditing(person)">Edit</a> 
+							<a href="#person{{$index}}" class="btn btn-default" role="button" ng-click="deletePerson($index)">Delete</a>
+						</p>
+					</div>
+					
+					<div class="caption" ng-show="el.isEditing">
+						<form name="elemForm" ng-submit="elemForm.$valid && el.submit()">
+						
+							<div class="input-group">
+								<span class="input-group-addon glyphicon glyphicon-picture"></span>
+								<input name="userImg" ng-model="person.image" class="form-control" placeholder="Image URL">
+							</div>
+							<span class="error" ng-show="elemForm.userImg.$error.required">Required</span><br>
+							
+							<div class="input-group">
+								<span class="input-group-addon">G</span>
+								<select class="form-control" ng-model="person.gender">
+								  <option>Male</option>
+								  <option>Female</option>
+								</select>
+							</div>
+							<br>
+							
+							<div class="input-group">
+								<span class="input-group-addon glyphicon glyphicon-search"></span>
+								<input name="userName" ng-model="person.name" class="form-control" placeholder="Name" required>
+							</div>
+							<span class="error" ng-show="elemForm.userName.$error.required">Required</span><br>
+							
+							<div class="input-group">
+								<span class="input-group-addon">@</span>
+								<input name="userEmail" ng-model="person.email" class="form-control" placeholder="Email" required>
+							</div>
+							<span class="error" ng-show="elemForm.userEmail.$error.email">Invalid email</span><br>
+							
+							<div class="input-group">
+								<span class="input-group-addon glyphicon glyphicon-briefcase"></span>
+								<input name="userJob" ng-model="person.job" class="form-control" placeholder="Job" required>
+							</div>
+							<span class="error" ng-show="elemForm.userJob.$error.required">Required</span><br>
+							
+							<p>
+								<button href="#person{{$index}}" class="btn btn-primary" type="submit">Save</button> 
+								<a href="#person{{$index}}" class="btn btn-default" role="button" ng-click="el.cancelEditing(person)">Cancel</a>
+							</p>
+						</form>
+					</div>
+				</div>
+			  </div>
+			</div>
+		</div> 
+		
+		
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+		<script src="js/vendor/angular-route.min.js"></script>
+        <script src="js/vendor/ui-bootstrap-0.9.0.min.js"></script>
+        <script src="js/controller.js"></script>
+
+    </body>
+</html>
