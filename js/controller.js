@@ -1,132 +1,131 @@
-var webApp = angular.module("webApp",['ui.bootstrap','ngRoute']);
+// ------------------------------------------------
+// index.html "/"
+// ------------------------------------------------
 
-webApp.factory('Data', function($http,$log){
-    
-	return $http.get("js/data.json");
-});
-
-webApp.controller("IndexCtrl",function($scope,$http,$modal,$log,Data){
-
-	// Initialize empty array
+webApp.controller("MapCtrl",["$scope","$http","$modal","$log","Data","MapUtils",function($scope,$http,$modal,$log,Data,MapUtils){
+	
+	// Get JSON Promise
 	Data.success(function(data, status, headers, config){
 		$scope.persons = data;
 	});
 	
+	// Open modal window, to develop
 	$scope.save = function(){
 	
 		var modalInstance = $modal.open({
-		  templateUrl: 'myModalContent.html',
+		  templateUrl: "myModalContent.html",
 		  controller: "ModalInstanceCtrl"
 		});
 		
 		modalInstance.result.then(function (selectedItem) {
 		  $scope.selected = selectedItem;
 		}, function () {
-		  $log.info('Modal dismissed at: ' + new Date());
+		  $log.info("Modal dismissed at: " + new Date());
 		});
-	}
+		
+	};
 	
-})
-.directive('navBar', function() {
-    return {
-      templateUrl: 'templates/nav-bar.html'
-    };
-});
+	// Select a person
+	$scope.select = function(person){
+	
+		MapUtils.setSelectedPerson(person);
+		
+		$scope.xValue = person.xValue;
+		$scope.yValue = person.yValue;
+
+	};
+	
+	// Change the person's position
+	$scope.changePosition = function(){
+		MapUtils.setPosition($scope.xValue,$scope.yValue,MapUtils.getSelectedPerson());
+	};
+	
+	// Toggle "selected" class if person is selected
+	$scope.selectedClass = function(person){
+		return ($scope.isSelected(person)) ? "selected" : "";
+	};
+	
+	// Is person selected
+	$scope.isSelected = function(person){
+		return (MapUtils.getSelectedPerson() == person) ? true : false;
+	};
+	
+	// Disable input if no selection
+	$scope.inputDisabled = function(){
+		return (MapUtils.getSelectedPerson() == null) ? true : false;
+	};
+	
+	// Reset selection
+	$scope.resetSelection = function(){
+		MapUtils.setSelectedPerson(null);
+		$scope.xValue = null;
+		$scope.yValue = null;
+	};
+	
+	// Initialize person position
+	$scope.initPosition = function(person){
+		MapUtils.setPosition(person.xValue,person.yValue,person);
+	};
+	
+}]);
+
 
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
+// To Develop
 
-webApp.controller("ModalInstanceCtrl", function ($scope, $modalInstance, $log, $http, Data) {
+webApp.controller("ModalInstanceCtrl", ["$scope","$modalInstance","$log","$http","Data","$rootScope", function ($scope, $modalInstance, $log, $http, Data, $rootScope) {
+
+	Data.success(function(data, status, headers, config){
+		$scope.persons = data;
+	});
+
+    $scope.ok = function () {
+		// Post data
+		/*$http.post("js/data.json",$scope.persons).success(function(responseData){
+			$log.log(responseData);
+		}).error(function(responseData){
+			$log.log(responseData);
+		});*/
+		$modalInstance.close();
+    };
+
+    $scope.cancel = function () {
+		$modalInstance.dismiss("cancel");
+    };
+	
+}]);
+
+
+// ------------------------------------------------
+// edit.html "/editUsers"
+// ------------------------------------------------
+
+webApp.controller("EditCtrl", ["$scope","$http","$log","Data", function($scope,$http,$log,Data){
 
 	// Initialize empty array
 	Data.success(function(data, status, headers, config){
 		$scope.persons = data;
 	});
 
-  $scope.ok = function () {
-  
-	// Get data
-	$http.post("js/data.json",$scope.persons).success(function(responseData){
-		$log.log(responseData);
-	}).error(function(responseData){
-		$log.log(responseData);
-	});
-    $modalInstance.close();
-  };
-
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-});
-
-webApp.controller("MapCtrl",function($log){
-
-	this.changePosition = function(){
-	
-		this.selectedPerson.xValue = this.xValue;
-		this.selectedPerson.yValue = this.yValue;
-		
-		this.selectedPerson.style = {'left':this.selectedPerson.xValue+'px','top':this.selectedPerson.yValue+'px'};
-		
-	};
-	
-	this.select = function(person){
-		
-		this.selectedPerson = person;
-		
-		this.xValue = (person.xValue) ? person.xValue : 0;
-		this.yValue = (person.yValue) ? person.yValue : 0;
-		
-		this.selectedPerson.style = {'left':this.selectedPerson.xValue+'px','top':this.selectedPerson.yValue+'px'};
-
-	};
-	
-	this.selectedClass = function(person){
-		return (this.isSelected(person)) ? "selected" : "";
-	};
-	
-	this.isSelected = function(person){
-		return (this.selectedPerson == person) ? true : false;
-	};
-	
-	this.inputDisabled = function(){
-		return (this.selectedPerson == null) ? true : false;
-	};
-	
-	this.unselect = function(){
-		this.selectedPerson = null;
-		this.xValue = null;
-		this.yValue = null;
-	};
-	
-	this.initPosition = function(person){
-		
-		person.xValue = (person.xValue) ? person.xValue : 0;
-		person.yValue = (person.yValue) ? person.yValue : 0;
-		
-		person.style = {'left':person.xValue+'px','top':person.yValue+'px'};
-
+	$scope.deletePerson = function ( idx ) {
+		$scope.persons.splice(idx, 1);
 	};
 
-});
+	$scope.createUser = function(){
+		$scope.persons.unshift({
+			"name":"",
+			"gender":"Male",
+			"email":"",
+			"job":"",
+			"image":""
+		});
+	};
+	
+}]);
 
-webApp.config(function($routeProvider, $locationProvider) {
-
-  $routeProvider.when('/', {
-    templateUrl: '/index.html',
-    controller: 'IndexCtrl',
-  })
-  .when('/edit/', {
-    templateUrl: '/edit.html',
-    controller: 'EditCtrl',
-  });
-
-  // configure html5 to get links working on jsfiddle
-  $locationProvider.html5Mode(true);
-  
-});
-
-webApp.controller("elementCtrl", function(){
+// User information controller
+webApp.controller("UserInfoCtrl", function(){
 
 	this.isEditing = false;
 	
@@ -142,38 +141,6 @@ webApp.controller("elementCtrl", function(){
 	
 	this.submit = function(){
 		this.isEditing = false;
-	}
+	};
 
 });
-
-
-webApp.controller("EditCtrl", ["$scope","$http","$log","$route","$location","$routeParams", function($scope,$http,$log,$route,$location,$routeParams){
-	
-	// Initialize empty array
-	$scope.persons = [];
-	
-	$scope.$route = $route;
-    $scope.$location = $location;
-    $scope.$routeParams = $routeParams;
-
-	
-	
-	$scope.deletePerson = function ( idx ) {
-		$scope.persons.splice(idx, 1);
-	};
-	
-	$scope.isCollapsed = true;
-	$scope.toggleNavBar = function(){
-		$scope.isCollapsed = !$scope.isCollapsed;
-	};
-	
-	$scope.createUser = function(){
-		$scope.persons.unshift({
-			"name":"",
-			"gender":"Male",
-			"email":"",
-			"job":"",
-			"image":""
-		});
-	}
-}]);

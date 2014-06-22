@@ -1,0 +1,58 @@
+<div class="thumbnail">
+	<div class="caption" ng-show="!user.isEditing">
+		<img ng-src="{{person.image || 'img/generic-'+person.gender+'.jpg' | lowercase}}" alt="Photo of {{person.name}}">
+		<h3>{{person.name}}</h3>
+		<p>{{person.job}}</p>
+		<p>
+			<a href="mailto:{{person.email}}">{{person.email}}</a>
+		</p>
+		<p>
+			<a href="javascript:;" class="btn btn-primary" role="button" ng-click="user.enterEditing(person)">Edit</a> 
+			<a href="javascript:;" class="btn btn-default" role="button" ng-click="deletePerson($index)">Delete</a>
+		</p>
+	</div>
+					
+	<div class="caption" ng-show="user.isEditing">
+		<form name="elemForm" ng-submit="elemForm.$valid && user.submit()">
+						
+			<div class="input-group">
+				<span class="input-group-addon glyphicon glyphicon-picture"></span>
+				<input name="userImg" ng-model="person.image" class="form-control" placeholder="Image URL">
+			</div>
+			<span class="error" ng-show="elemForm.userImg.$error.required">Required</span><br>
+							
+			<div class="input-group">
+				<span class="input-group-addon">G</span>
+				<select class="form-control" ng-model="person.gender">
+					<option>Male</option>
+					<option>Female</option>
+				</select>
+			</div>
+			<br>
+							
+			<div class="input-group">
+				<span class="input-group-addon glyphicon glyphicon-search"></span>
+				<input name="userName" ng-model="person.name" class="form-control" placeholder="Name" required>
+			</div>
+			<span class="error" ng-show="elemForm.userName.$error.required">Required</span><br>
+							
+			<div class="input-group">
+				<span class="input-group-addon">@</span>
+				<input name="userEmail" ng-model="person.email" class="form-control" placeholder="Email" required>
+			</div>
+			<span class="error" ng-show="elemForm.userEmail.$error.email">Invalid email</span><br>
+			<span class="error" ng-show="elemForm.userName.$error.required">Required</span><br>
+							
+			<div class="input-group">
+				<span class="input-group-addon glyphicon glyphicon-briefcase"></span>
+				<input name="userJob" ng-model="person.job" class="form-control" placeholder="Job" required>
+			</div>
+			<span class="error" ng-show="elemForm.userJob.$error.required">Required</span><br>
+							
+			<p>
+				<button href="javascript:;" class="btn btn-primary" type="submit">Save</button> 
+				<a href="javascript:;" class="btn btn-default" role="button" ng-click="user.cancelEditing(person)">Cancel</a>
+			</p>
+		</form>
+	</div>
+</div>
