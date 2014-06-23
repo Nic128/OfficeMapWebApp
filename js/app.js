@@ -8,7 +8,11 @@ webApp.run(function($rootScope) {
 // Routing
 webApp.config(function($routeProvider, $locationProvider) {
 
-    $routeProvider.when("/editMap", {
+    $routeProvider.when("/index.html", {
+		templateUrl: "/edit-map.html",
+		controller: "MapCtrl",
+    })
+	.when("/editMap", {
 		templateUrl: "/edit-map.html",
 		controller: "MapCtrl",
     })
@@ -16,8 +20,12 @@ webApp.config(function($routeProvider, $locationProvider) {
 		templateUrl: "/edit.html",
 		controller: "EditCtrl",
     })
+	.when("/edit.html", {
+		templateUrl: "/edit.html",
+		controller: "EditCtrl",
+    })
     .otherwise({
-        redirectTo: "/editMap"
+        redirectTo: "/index.html"
     });
 
     // Configure html5 to get links working on jsfiddle

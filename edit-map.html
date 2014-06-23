@@ -3,7 +3,7 @@
 	<!-- Simple sidebar -->
 	<div id="sidebar-wrapper">
 		<ul class="sidebar-nav">
-			<li class="sidebar-brand"><a href="/editUsers">Edit User list</a></li>
+			<li class="sidebar-brand"><a href="/edit.html">Edit User list</a></li>
 			<li ng-repeat="person in persons">
 				<a href="javascript:;" ng-class="selectedClass(person)" ng-click="select(person)">{{person.name}}</a>
 				<!--<button type="button" class="btn btn-default btn-sm" ng-click="showInfo()" ng-show="isSelected(person)">
