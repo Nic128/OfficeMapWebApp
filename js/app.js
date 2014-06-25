@@ -8,24 +8,24 @@ webApp.run(function($rootScope) {
 // Routing
 webApp.config(function($routeProvider, $locationProvider) {
 
-    $routeProvider.when("/index.html", {
-		templateUrl: "/edit-map.html",
+    $routeProvider.when("/OfficeMapWebApp/index.html", {
+		templateUrl: "/OfficeMapWebApp/edit-map.html",
 		controller: "MapCtrl",
     })
-	.when("/editMap", {
-		templateUrl: "/edit-map.html",
+	.when("/OfficeMapWebApp/editMap", {
+		templateUrl: "/OfficeMapWebApp/edit-map.html",
 		controller: "MapCtrl",
     })
-    .when("/editUsers", {
-		templateUrl: "/edit.html",
+    .when("/OfficeMapWebApp/editUsers", {
+		templateUrl: "/OfficeMapWebApp/edit.html",
 		controller: "EditCtrl",
     })
-	.when("/edit.html", {
-		templateUrl: "/edit.html",
+	.when("/OfficeMapWebApp/edit.html", {
+		templateUrl: "/OfficeMapWebApp/edit.html",
 		controller: "EditCtrl",
     })
     .otherwise({
-        redirectTo: "/index.html"
+        redirectTo: "/OfficeMapWebApp/index.html"
     });
 
     // Configure html5 to get links working on jsfiddle
