@@ -1,14 +1,11 @@
 var webApp = angular.module("webApp",["ui.bootstrap","ngRoute"]);
 
 // Define global methods in rootScope
-webApp.run(function($rootScope,$http,$location,$log) {
+webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
 
     $rootScope.persons = [];
-	$rootScope.selectedPerson = null;
 	
-	$http.get("js/data.json").success(function(data, status, headers, config){
-		$rootScope.persons = data;
-	});	
+	$rootScope.selectedPerson = null;
 	
 	// Get selected contact
 	$rootScope.getSelectedPerson = function(){
@@ -54,7 +51,25 @@ webApp.run(function($rootScope,$http,$location,$log) {
 	
 	$rootScope.changeSection = function(section) {
 	  $location.path("/"+section);
-	}
+	};
+	
+	$rootScope.$on("$routeChangeStart", function (event, next, current) {
+		// If LocalStorage Exist
+		if (sessionStorage.restorestate == "true") {
+			$rootScope.$broadcast('restorestate'); //let everything know we need to restore state
+			sessionStorage.restorestate = false;
+		}
+		else{ // Load Json
+			JsonService.success(function(data, status, headers, config){
+				$rootScope.persons = data;
+			});
+		}
+	});
+
+	//let everything know that we need to save state now.
+	window.onbeforeunload = function (event) {
+		$rootScope.$broadcast('savestate');
+	};
 	
 });
 
@@ -101,56 +116,3 @@ webApp.factory("MapUtils", ["$http","$log", function($http,$log){
 	
 }]);
 
-// Modal window directive
-webApp.directive("modalWindow", function() {
-    return {
-	  restrict: "E",
-      templateUrl: "templates/modal-window.html"
-    };
-});
-
-// User information directive
-webApp.directive("userInfo", function() {
-    return {
-	  restrict: "E",
-      templateUrl: "templates/user-info.html",
-	  controller: "UserInfoCtrl",
-	  controllerAs: "user"
-    };
-});
-
-// Drag and drop directive
-webApp.directive("pointerDraggable", ["$document","$log","MapUtils", function($document,$log,MapUtils) {
-    
-	return function(scope, element, attr) {
-      var startX = 0, startY = 0, x = 0, y = 0;
-
-      element.on("mousedown", function(event) {
-        // Prevent default dragging of selected content
-        event.preventDefault();
-		x = scope.person.xValue;
-		y = scope.person.yValue;
-        startX = event.pageX - x;
-        startY = event.pageY - y;
-        $document.on("mousemove", mousemove);
-        $document.on("mouseup", mouseup);
-      });
-
-      function mousemove(event) {
-        y = event.pageY - startY;
-        x = event.pageX - startX;
-        element.css({
-          top: y + "px",
-          left:  x + "px"
-        });
-		scope.person.xValue = x;
-		scope.person.yValue = y;
-      }
-
-      function mouseup() {
-        $document.off("mousemove", mousemove);
-        $document.off("mouseup", mouseup);
-      }
-	  
-    };
-}]);

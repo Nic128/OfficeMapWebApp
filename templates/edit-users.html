@@ -8,7 +8,7 @@
 			
 			<div class="row">
 			  <span ng-hide="persons.length" class="glyphicon glyphicon-refresh"></span>
-			  <div class="col-sm-6 col-md-4" ng-repeat="person in persons">
+			  <div class="col-sm-6 col-md-4" ng-repeat="person in persons | filter:search">
 				
 				<user-info></user-info>
 				
