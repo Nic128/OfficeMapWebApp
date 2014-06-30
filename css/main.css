@@ -37,6 +37,11 @@ h3 {
 	position:relative;
 }
 
+.sidebar-nav li.input {
+	padding: 0px 0px 10px;
+	line-height: inherit;
+}
+
 .sidebar-nav li button {
 	position:absolute;
 	right: 5px;
@@ -84,7 +89,7 @@ h3 {
 
 
 
-.glyphicon.glyphicon-map-marker {
+.glyphicon.glyphicon-map-marker, .thumbnail {
   -webkit-animation: enter_sequence 0.5s linear; /* Safari/Chrome */
   animation: enter_sequence 0.5s linear; /* IE10+ and Future Browsers */
 }
