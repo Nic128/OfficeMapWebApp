@@ -95,7 +95,7 @@ webApp.config(function($routeProvider, $locationProvider) {
 		controller: "EditUsersCtrl"
     })
     .otherwise({
-        redirectTo: "/edit-map"
+        redirectTo: "/home"
     });
 
     // Configure html5 to get links working on jsfiddle
