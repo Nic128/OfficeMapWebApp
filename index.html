@@ -16,15 +16,22 @@
 
     </head>
     <body>
-		
-		<div id="wrapper">
+				
+		<div id="wrapper" ng-class="toggledMenu">
 		
 			<!-- Simple sidebar -->
 			<div id="sidebar-wrapper">
 				<ul class="sidebar-nav">
-					<li class="sidebar-brand" ng-hide="isCurrentSection('edit-users')"><a href="javascript:;" ng-click="changeSection('edit-users')">Edit User list</a></li>
-					<li class="sidebar-brand" ng-hide="isCurrentSection('edit-map')"><a href="javascript:;" ng-click="changeSection('edit-map')">Edit Map</a></li>
-					<li class="input">
+					<li class="sidebar-brand title"><a href="javascript:;" ng-click="changeSection('home')">Office Map Web App</a></li>
+					<li class="sidebar-brand">
+						<div class="btn-group">
+						  <button type="button" class="btn btn-default" ng-class="isCurrentSection('home')" ng-click="changeSection('home')"><span class="glyphicon glyphicon-home"></button>
+						  <button type="button" class="btn btn-default" ng-class="isCurrentSection('edit-map')" ng-click="changeSection('edit-map')"><span class="glyphicon glyphicon-map-marker"></span></button>
+						  <button type="button" class="btn btn-default" ng-class="isCurrentSection('edit-users')" ng-click="changeSection('edit-users')"><span class="glyphicon glyphicon-user"></button>
+						  <button type="button" class="btn btn-default" ng-class="isSearch && 'active'" ng-click="toggleSearch()"><span class="glyphicon glyphicon-search"></button>
+						</div>
+					</li>
+					<li class="input" ng-show="isSearch">
 						<input type="text" ng-model="search.name" placeHolder="Name search"></input> 
 					</li>
 					<li ng-repeat="person in persons | filter:search">

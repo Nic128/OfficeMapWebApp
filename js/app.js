@@ -4,8 +4,12 @@ var webApp = angular.module("webApp",["ui.bootstrap","ngRoute"]);
 webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
 
     $rootScope.persons = [];
-	
 	$rootScope.selectedPerson = null;
+	
+	$rootScope.toggledMenu = "";
+	$rootScope.toggleMenu = function(){
+		$rootScope.toggledMenu = ($rootScope.toggledMenu === "") ? "active" : "";
+	};
 	
 	// Get selected contact
 	$rootScope.getSelectedPerson = function(){
@@ -37,16 +41,19 @@ webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
 
 	};
 	
+	// Toggle search field
+	$rootScope.isSearch = false;
+	$rootScope.toggleSearch = function(){
+		$rootScope.isSearch = !$rootScope.isSearch;
+	};
+	
 	// Toggle "selected" class if person is selected
 	$rootScope.selectedClass = function(person){
 		return ($rootScope.isSelected(person)) ? "selected" : "";
 	};
 	
 	$rootScope.isCurrentSection = function(section){
-		var path = $location.path();
-		
-		if (path.indexOf(section) == -1) return false;
-		else return true;
+		return ($location.path().indexOf(section) == -1) ? "" : "active";
 	};
 	
 	$rootScope.changeSection = function(section) {
@@ -55,9 +62,8 @@ webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
 	
 	$rootScope.$on("$routeChangeStart", function (event, next, current) {
 		// If LocalStorage Exist
-		if (sessionStorage.restorestate == "true") {
+		if (localStorage.saveService && localStorage.restoreState) {
 			$rootScope.$broadcast('restorestate'); //let everything know we need to restore state
-			sessionStorage.restorestate = false;
 		}
 		else{ // Load Json
 			JsonService.success(function(data, status, headers, config){
@@ -76,7 +82,11 @@ webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
 // Routing
 webApp.config(function($routeProvider, $locationProvider) {
 
-    $routeProvider.when("/edit-map", {
+    $routeProvider.when("/home", {
+		templateUrl: "templates/home.html",
+		controller: "MapCtrl"
+    })
+	.when("/edit-map", {
 		templateUrl: "templates/edit-map.html",
 		controller: "MapCtrl"
     })

@@ -7,12 +7,13 @@ webApp.factory('saveService', ['$rootScope', function ($rootScope) {
     var service = {
 
         SaveState: function () {
-            sessionStorage.saveService = angular.toJson($rootScope.persons);
-			sessionStorage.restorestate = true;
+            localStorage.saveService = angular.toJson($rootScope.persons);
+            localStorage.restoreState = true;
         },
 
         RestoreState: function () {
-            $rootScope.persons = angular.fromJson(sessionStorage.saveService);
+            $rootScope.persons = angular.fromJson(localStorage.saveService);
+			localStorage.restoreState = false;
         }
     };
 

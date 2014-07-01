@@ -84,7 +84,9 @@ webApp.controller("EditUsersCtrl", ["$scope","$http","$log", function($scope,$ht
 			"gender":"Male",
 			"email":"",
 			"job":"",
-			"image":""
+			"image":"",
+			"xValue":0,
+			"yValue":0
 		});
 	};
 	
