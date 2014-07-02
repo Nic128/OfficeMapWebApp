@@ -2,12 +2,7 @@
 // index.html "/"
 // ------------------------------------------------
 
-webApp.controller("MapCtrl",["$scope","$http","$modal","$log","Data","MapUtils",function($scope,$http,$modal,$log,Data,MapUtils){
-	
-	// Get JSON Promise
-	Data.success(function(data, status, headers, config){
-		$scope.persons = data;
-	});
+webApp.controller("MapCtrl",["$scope","$http","$modal","$log","MapUtils",function($scope,$http,$modal,$log,MapUtils){
 	
 	// Open modal window, to develop
 	$scope.save = function(){
@@ -24,40 +19,20 @@ webApp.controller("MapCtrl",["$scope","$http","$modal","$log","Data","MapUtils",
 		});
 		
 	};
-	
-	// Select a person
-	$scope.select = function(person){
-	
-		MapUtils.setSelectedPerson(person);
-		
-		$scope.xValue = person.xValue;
-		$scope.yValue = person.yValue;
 
-	};
-	
 	// Change the person's position
 	$scope.changePosition = function(){
-		MapUtils.setPosition($scope.xValue,$scope.yValue,MapUtils.getSelectedPerson());
-	};
-	
-	// Toggle "selected" class if person is selected
-	$scope.selectedClass = function(person){
-		return ($scope.isSelected(person)) ? "selected" : "";
-	};
-	
-	// Is person selected
-	$scope.isSelected = function(person){
-		return (MapUtils.getSelectedPerson() == person) ? true : false;
+		MapUtils.setPosition($scope.xValue,$scope.yValue,$scope.getSelectedPerson());
 	};
 	
 	// Disable input if no selection
 	$scope.inputDisabled = function(){
-		return (MapUtils.getSelectedPerson() == null) ? true : false;
+		return ($scope.getSelectedPerson() == null) ? true : false;
 	};
 	
 	// Reset selection
 	$scope.resetSelection = function(){
-		MapUtils.setSelectedPerson(null);
+		$scope.resetPerson();
 		$scope.xValue = null;
 		$scope.yValue = null;
 	};
@@ -74,13 +49,9 @@ webApp.controller("MapCtrl",["$scope","$http","$modal","$log","Data","MapUtils",
 // It is not the same as the $modal service used above.
 // To Develop
 
-webApp.controller("ModalInstanceCtrl", ["$scope","$modalInstance","$log","$http","Data","$rootScope", function ($scope, $modalInstance, $log, $http, Data, $rootScope) {
+webApp.controller("ModalInstanceCtrl", ["$scope","$modalInstance","$log","$http","$rootScope", function ($scope, $modalInstance, $log, $http, $rootScope) {
 
-	Data.success(function(data, status, headers, config){
-		$scope.persons = data;
-	});
-
-    $scope.ok = function () {
+	$scope.ok = function () {
 		// Post data
 		/*$http.post("js/data.json",$scope.persons).success(function(responseData){
 			$log.log(responseData);
@@ -101,12 +72,7 @@ webApp.controller("ModalInstanceCtrl", ["$scope","$modalInstance","$log","$http"
 // edit.html "/editUsers"
 // ------------------------------------------------
 
-webApp.controller("EditCtrl", ["$scope","$http","$log","Data", function($scope,$http,$log,Data){
-
-	// Initialize empty array
-	Data.success(function(data, status, headers, config){
-		$scope.persons = data;
-	});
+webApp.controller("EditUsersCtrl", ["$scope","$http","$log", function($scope,$http,$log){
 
 	$scope.deletePerson = function ( idx ) {
 		$scope.persons.splice(idx, 1);
@@ -114,28 +80,38 @@ webApp.controller("EditCtrl", ["$scope","$http","$log","Data", function($scope,$
 
 	$scope.createUser = function(){
 		$scope.persons.unshift({
-			"name":"",
+			"name":"New User",
 			"gender":"Male",
 			"email":"",
 			"job":"",
-			"image":""
+			"image":"",
+			"xValue":0,
+			"yValue":0
 		});
 	};
 	
 }]);
 
 // User information controller
-webApp.controller("UserInfoCtrl", function(){
+webApp.controller("UserInfoCtrl", function($log){
 
 	this.isEditing = false;
+	this.tempData = {};
 	
 	this.enterEditing = function(el){
-		this.tempData = el;
+		this.tempData = angular.copy(el);
 		this.isEditing = true;
 	};
 	
 	this.cancelEditing = function(el){
-		el = this.tempName;
+		// Reset fields
+		el.name = this.tempData.name;
+		el.gender = this.tempData.gender;
+		el.email = this.tempData.email;
+		el.job = this.tempData.job;
+		el.image = this.tempData.image;
+
+		this.tempData = {};
 		this.isEditing = false;
 	};
 	

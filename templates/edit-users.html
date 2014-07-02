@@ -1,0 +1,24 @@
+	<!-- Page content -->
+	<div id="page-content-wrapper">
+	
+		<div class="content-header">
+			<h1>
+				<a id="menu-toggle" href="javascript:;" class="btn btn-default" ng-click="toggleMenu()"><i class="icon-reorder"></i></a>
+				Edit Users
+			</h1>
+		</div>
+		
+		<div class="btn-row">
+			<a href="javascript:;" class="btn btn-primary" role="button" ng-click="createUser()">Create User</a> 
+		</div>
+			
+		<div class="row">
+			<span ng-hide="persons.length" class="glyphicon glyphicon-refresh"></span>
+			<div class="col-sm-6 col-md-4" ng-repeat="person in persons | filter:search">
+				
+				<user-info></user-info>
+				
+			</div>
+		</div>
+		
+	</div> 

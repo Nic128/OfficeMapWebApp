@@ -1,60 +1,114 @@
 var webApp = angular.module("webApp",["ui.bootstrap","ngRoute"]);
 
 // Define global methods in rootScope
-webApp.run(function($rootScope) {
-  
+webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
+
+    $rootScope.persons = [];
+	$rootScope.selectedPerson = null;
+	
+	$rootScope.toggledMenu = "";
+	$rootScope.toggleMenu = function(){
+		$rootScope.toggledMenu = ($rootScope.toggledMenu === "") ? "active" : "";
+	};
+	
+	// Get selected contact
+	$rootScope.getSelectedPerson = function(){
+		return $rootScope.selectedPerson;
+	};
+	
+	// Set selected contact
+	$rootScope.setSelectedPerson = function(contact){
+		$rootScope.selectedPerson = contact;
+	};
+	
+	// Set selected contact
+	$rootScope.resetPerson = function(){
+		$rootScope.selectedPerson = null;
+	};
+	
+	// Is person selected
+	$rootScope.isSelected = function(person){
+		return ($rootScope.getSelectedPerson() === person) ? true : false;
+	};
+	
+	// Select a person
+	$rootScope.select = function(person){
+
+		$rootScope.setSelectedPerson(person);
+		
+		$rootScope.xValue = person.xValue;
+		$rootScope.yValue = person.yValue;
+
+	};
+	
+	// Toggle search field
+	$rootScope.isSearch = false;
+	$rootScope.toggleSearch = function(){
+		$rootScope.isSearch = !$rootScope.isSearch;
+	};
+	
+	// Toggle "selected" class if person is selected
+	$rootScope.selectedClass = function(person){
+		return ($rootScope.isSelected(person)) ? "selected" : "";
+	};
+	
+	$rootScope.isCurrentSection = function(section){
+		return ($location.path().indexOf(section) == -1) ? "" : "active";
+	};
+	
+	$rootScope.changeSection = function(section) {
+	  $location.path("/"+section);
+	};
+	
+	$rootScope.$on("$routeChangeStart", function (event, next, current) {
+		// If LocalStorage Exist
+		if (localStorage.saveService && localStorage.restoreState) {
+			$rootScope.$broadcast('restorestate'); //let everything know we need to restore state
+		}
+		else{ // Load Json
+			JsonService.success(function(data, status, headers, config){
+				$rootScope.persons = data;
+			});
+		}
+	});
+
+	//let everything know that we need to save state now.
+	window.onbeforeunload = function (event) {
+		$rootScope.$broadcast('savestate');
+	};
+	
 });
 
 // Routing
 webApp.config(function($routeProvider, $locationProvider) {
 
-    $routeProvider.when("/index.html", {
-		templateUrl: "/edit-map.html",
-		controller: "MapCtrl",
+    $routeProvider.when("/home", {
+		templateUrl: "templates/home.html",
+		controller: "MapCtrl"
     })
-	.when("/editMap", {
-		templateUrl: "/edit-map.html",
-		controller: "MapCtrl",
+	.when("/edit-map", {
+		templateUrl: "templates/edit-map.html",
+		controller: "MapCtrl"
     })
-    .when("/editUsers", {
-		templateUrl: "/edit.html",
-		controller: "EditCtrl",
-    })
-	.when("/edit.html", {
-		templateUrl: "/edit.html",
-		controller: "EditCtrl",
+    .when("/edit-users", {
+		templateUrl: "templates/edit-users.html",
+		controller: "EditUsersCtrl"
     })
     .otherwise({
-        redirectTo: "/index.html"
+        redirectTo: "/home"
     });
 
     // Configure html5 to get links working on jsfiddle
-    $locationProvider.html5Mode(true);
+    //$locationProvider.html5Mode(true);
   
 });
-
-// Get JSON, returns promise
-webApp.factory("Data", ["$http","$log", function($http,$log){
-	return $http.get("js/data.json");
-}]);
 
 // Map Utilities
 webApp.factory("MapUtils", ["$http","$log", function($http,$log){
 	
 	var map = {};
-	map.selectedPerson = null;
 	map.xValue = 0;
 	map.yValue = 0;
-	
-	// Get selected person
-	map.getSelectedPerson = function(){
-		return map.selectedPerson;
-	};
-	
-	// Set selected person
-	map.setSelectedPerson = function(person){
-		map.selectedPerson = person;
-	};
 	
 	// Get person position
 	map.getPosition = function(){
@@ -72,56 +126,3 @@ webApp.factory("MapUtils", ["$http","$log", function($http,$log){
 	
 }]);
 
-// Modal window directive
-webApp.directive("modalWindow", function() {
-    return {
-	  restrict: "E",
-      templateUrl: "templates/modal-window.html"
-    };
-});
-
-// User information directive
-webApp.directive("userInfo", function() {
-    return {
-	  restrict: "E",
-      templateUrl: "templates/user-info.html",
-	  controller: "UserInfoCtrl",
-	  controllerAs: "user"
-    };
-});
-
-// Drag and drop directive
-webApp.directive("pointerDraggable", ["$document","$log","MapUtils", function($document,$log,MapUtils) {
-    
-	return function(scope, element, attr) {
-      var startX = 0, startY = 0, x = 0, y = 0;
-
-      element.on("mousedown", function(event) {
-        // Prevent default dragging of selected content
-        event.preventDefault();
-		x = scope.person.xValue;
-		y = scope.person.yValue;
-        startX = event.pageX - x;
-        startY = event.pageY - y;
-        $document.on("mousemove", mousemove);
-        $document.on("mouseup", mouseup);
-      });
-
-      function mousemove(event) {
-        y = event.pageY - startY;
-        x = event.pageX - startX;
-        element.css({
-          top: y + "px",
-          left:  x + "px"
-        });
-		scope.person.xValue = x;
-		scope.person.yValue = y;
-      }
-
-      function mouseup() {
-        $document.off("mousemove", mousemove);
-        $document.off("mouseup", mouseup);
-      }
-	  
-    };
-}]);

@@ -7,6 +7,7 @@
         <title>Office Map Web App</title>
         <meta name="description" content="Office Map Web App - Nic128">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+		<base href="/OfficeMapWebApp/" target="_blank">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -15,14 +16,42 @@
 
     </head>
     <body>
+				
+		<div id="wrapper" ng-class="toggledMenu">
 		
-		<div ng-view></div>
+			<!-- Simple sidebar -->
+			<div id="sidebar-wrapper">
+				<ul class="sidebar-nav">
+					<li class="sidebar-brand title"><a href="javascript:;" ng-click="changeSection('home')">Office Map Web App</a></li>
+					<li class="sidebar-brand">
+						<div class="btn-group">
+						  <button type="button" class="btn btn-default" ng-class="isCurrentSection('home')" ng-click="changeSection('home')"><span class="glyphicon glyphicon-home"></button>
+						  <button type="button" class="btn btn-default" ng-class="isCurrentSection('edit-map')" ng-click="changeSection('edit-map')"><span class="glyphicon glyphicon-map-marker"></span></button>
+						  <button type="button" class="btn btn-default" ng-class="isCurrentSection('edit-users')" ng-click="changeSection('edit-users')"><span class="glyphicon glyphicon-user"></button>
+						  <button type="button" class="btn btn-default" ng-class="isSearch && 'active'" ng-click="toggleSearch()"><span class="glyphicon glyphicon-search"></button>
+						</div>
+					</li>
+					<li class="input" ng-show="isSearch">
+						<input type="text" ng-model="search.name" placeHolder="Name search"></input> 
+					</li>
+					<li ng-repeat="person in persons | filter:search">
+						<a href="javascript:;" ng-class="selectedClass(person)" ng-click="select(person)">{{person.name}}</a>
+					</li>
+				</ul>
+			</div>
+			
+			
+			<div ng-view></div>
+		
+		</div>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
         <script src="js/vendor/angular-route.min.js"></script>
         <script src="js/vendor/ui-bootstrap-tpls-0.11.0.min.js"></script>
         <script src="js/app.js"></script>
         <script src="js/controller.js"></script>
+        <script src="js/directive.js"></script>
+        <script src="js/service.js"></script>
 
     </body>
 </html>
