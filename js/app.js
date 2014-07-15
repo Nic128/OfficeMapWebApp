@@ -1,27 +1,39 @@
 var webApp = angular.module("webApp",["ui.bootstrap","ngRoute"]);
 
 // Define global methods in rootScope
-webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
+webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService,$sce) {
 
     $rootScope.persons = [];
 	$rootScope.selectedPerson = null;
+	$rootScope.isSearch = false;
 	
+	// Get Persistent data or Json.
+	if (saveService.DataExist()) {
+		$rootScope.$broadcast('restorestate');
+	}
+	else {
+		JsonService.success(function(data, status, headers, config){
+			$rootScope.persons = data;
+		});
+	}
+	
+	// Simple sidebar toggle menu
 	$rootScope.toggledMenu = "";
 	$rootScope.toggleMenu = function(){
 		$rootScope.toggledMenu = ($rootScope.toggledMenu === "") ? "active" : "";
 	};
 	
-	// Get selected contact
+	// Get selected person
 	$rootScope.getSelectedPerson = function(){
 		return $rootScope.selectedPerson;
 	};
 	
-	// Set selected contact
+	// Set selected person
 	$rootScope.setSelectedPerson = function(contact){
 		$rootScope.selectedPerson = contact;
 	};
 	
-	// Set selected contact
+	// Reset selected person
 	$rootScope.resetPerson = function(){
 		$rootScope.selectedPerson = null;
 	};
@@ -41,38 +53,29 @@ webApp.run(function($rootScope,$http,$location,$log,JsonService,saveService) {
 
 	};
 	
-	// Toggle search field
-	$rootScope.isSearch = false;
-	$rootScope.toggleSearch = function(){
-		$rootScope.isSearch = !$rootScope.isSearch;
-	};
-	
 	// Toggle "selected" class if person is selected
 	$rootScope.selectedClass = function(person){
 		return ($rootScope.isSelected(person)) ? "selected" : "";
 	};
 	
+	// Toggle active class for section button links
 	$rootScope.isCurrentSection = function(section){
 		return ($location.path().indexOf(section) == -1) ? "" : "active";
 	};
 	
+	// Change Section
 	$rootScope.changeSection = function(section) {
 	  $location.path("/"+section);
 	};
 	
-	$rootScope.$on("$routeChangeStart", function (event, next, current) {
-		// If LocalStorage Exist
-		if (localStorage.saveService && localStorage.restoreState) {
-			$rootScope.$broadcast('restorestate'); //let everything know we need to restore state
-		}
-		else{ // Load Json
-			JsonService.success(function(data, status, headers, config){
-				$rootScope.persons = data;
-			});
-		}
-	});
+	// Reset Data
+	$rootScope.resetData = function() {
+		JsonService.success(function(data, status, headers, config){
+			$rootScope.persons = data;
+		});
+	};
 
-	//let everything know that we need to save state now.
+	// On page unload, Save
 	window.onbeforeunload = function (event) {
 		$rootScope.$broadcast('savestate');
 	};
