@@ -17,7 +17,7 @@
 						
 			<div class="input-group">
 				<span class="input-group-addon glyphicon glyphicon-picture"></span>
-				<input name="userImg" ng-model="person.image" class="form-control" placeholder="Image URL">
+				<input type="text" name="userImg" ng-model="person.image" class="form-control" placeholder="Image URL">
 			</div>
 							
 			<div class="input-group">
@@ -30,20 +30,20 @@
 							
 			<div class="input-group">
 				<span class="input-group-addon glyphicon glyphicon-search"></span>
-				<input name="userName" ng-model="person.name" class="form-control" placeholder="Name" required>
+				<input type="text" name="userName" ng-model="person.name" class="form-control" placeholder="Name" required>
 				<p class="bg-warning" ng-show="elemForm.userName.$error.required">Name required</p>
 			</div>
 			
 			<div class="input-group">
 				<span class="input-group-addon">@</span>
-				<input name="userEmail" ng-model="person.email" class="form-control" placeholder="Email" required>
+				<input type="email" name="userEmail" ng-model="person.email" class="form-control" placeholder="Email" required>
 				<p class="bg-warning" ng-hide="elemForm.userEmail.$valid">Invalid email</p>
 				<p class="bg-warning" ng-show="elemForm.userEmail.$error.required">Email required</p>
 			</div>
 			
 			<div class="input-group">
 				<span class="input-group-addon glyphicon glyphicon-briefcase"></span>
-				<input name="userJob" ng-model="person.job" class="form-control" placeholder="Job title" required>
+				<input type="text" name="userJob" ng-model="person.job" class="form-control" placeholder="Job title" required>
 				<p class="bg-warning" ng-show="elemForm.userJob.$error.required">Job title required</p>
 			</div>
 			

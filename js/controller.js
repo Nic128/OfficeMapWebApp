@@ -44,6 +44,23 @@ webApp.controller("MapCtrl",["$scope","$http","$modal","$log","MapUtils",functio
 	
 }]);
 
+webApp.controller('SearchFormController', ['$scope','$log', function($scope,$log) {
+      
+	// Toggle search field
+	$scope.toggleSearch = function(){
+		$scope.isSearch = !$scope.isSearch;
+		$scope.reset();
+	};
+	  
+	$scope.master = {};
+
+    $scope.reset = function() {
+		$scope.search = angular.copy($scope.master);
+    };
+
+    $scope.reset();
+}]);
+
 
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.

@@ -93,7 +93,7 @@ h3 {
 }
 
 
-#page-content-wrapper .glyphicon.glyphicon-map-marker, .thumbnail {
+#page-content-wrapper .glyphicon.glyphicon-map-marker {
   -webkit-animation: enter_sequence 0.5s linear; /* Safari/Chrome */
   animation: enter_sequence 0.5s linear; /* IE10+ and Future Browsers */
 }
